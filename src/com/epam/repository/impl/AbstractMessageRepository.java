@@ -4,17 +4,20 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.epam.FileInfo;
 import com.epam.repository.file.InFileMessageRepositoryReader;
 import com.epam.repository.file.InFileMessageRepositoryWriter;
 import com.epam.repository.memory.InMemoryMessageRepositoryReader;
 import com.epam.repository.memory.InMemoryMessageRepositoryWriter;
-import com.sun.istack.logging.Logger;
 
 public abstract class AbstractMessageRepository implements InFileMessageRepositoryWriter, InFileMessageRepositoryReader,
         InMemoryMessageRepositoryWriter, InMemoryMessageRepositoryReader {
+
+    private static final Logger LOGGER = Logger.getLogger(AbstractMessageRepository.class.getName());
 
     protected HashMap<String, String> cachedMessages = new HashMap<String, String>();
     protected String workingDir;
@@ -24,13 +27,13 @@ public abstract class AbstractMessageRepository implements InFileMessageReposito
         this.workingDir = workingDir;
     }
 
-    public abstract String getMessage(int id);
+    public abstract Optional<String> getMessage(int id);
 
     public abstract void saveMessage(String path);
 
     @Override
-    public String readFromMemory(String path) {
-        return cachedMessages.get(path);
+    public Optional<String> readFromMemory(String path) {
+        return Optional.ofNullable(cachedMessages.get(path));
     }
 
     @Override
@@ -39,17 +42,16 @@ public abstract class AbstractMessageRepository implements InFileMessageReposito
     }
 
     @Override
-    public String readFromFile(String path) {
+    public Optional<String> readFromFile(String path) {
 
-        String message = null;
+        Optional<String> message = Optional.empty();
         try {
-            message = new String(Files.readAllBytes(Paths.get(path)));
+            message = Optional.ofNullable(new String(Files.readAllBytes(Paths.get(path))));
         } catch (IOException e) {
-            Logger.getLogger(this.getClass()).log(Level.SEVERE,
-                    String.format("Error while reading message: '%s'", path), e);
+            LOGGER.log(Level.SEVERE, "Error while reading message: " + path);
         }
-        if (message != null)
-            saveToMemory(message);
+        if (message.isPresent())
+            saveToMemory(message.get());
 
         return message;
     }
@@ -58,13 +60,12 @@ public abstract class AbstractMessageRepository implements InFileMessageReposito
     public void saveToFile(String message) {
         FileInfo file_info = getMessageFileInfoById(idCounter);
         String file_path = file_info.getFilePath();
-        System.out.println("---------------> " + file_path);
+        System.out.println("Saved under: " + file_path);
 
         try {
             Files.write(Paths.get(file_path), message.getBytes());
         } catch (IOException e) {
-            Logger.getLogger(this.getClass()).log(Level.SEVERE,
-                    String.format("Error while saving message: '%s'", message), e);
+            LOGGER.log(Level.SEVERE, "Error while saving message: " + message);
         }
     }
 

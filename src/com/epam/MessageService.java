@@ -1,5 +1,7 @@
 package com.epam;
 
+import java.util.Optional;
+
 import com.epam.repository.MessageReader;
 import com.epam.repository.MessageWriter;
 import com.epam.repository.impl.MessageRepository;
@@ -13,7 +15,7 @@ public class MessageService implements MessageReader, MessageWriter {
     }
 
     @Override
-    public String readMessage(int id) {
+    public Optional<String> readMessage(int id) {
         return messageRepository.getMessage(id);
     }
 

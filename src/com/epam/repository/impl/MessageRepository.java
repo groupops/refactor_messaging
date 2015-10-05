@@ -1,5 +1,7 @@
 package com.epam.repository.impl;
 
+import java.util.Optional;
+
 import com.epam.FileInfo;
 
 public class MessageRepository extends AbstractMessageRepository {
@@ -9,12 +11,11 @@ public class MessageRepository extends AbstractMessageRepository {
     }
 
     @Override
-    public String getMessage(int id) {
-        String message = null;
+    public Optional<String> getMessage(int id) {
+        Optional<String> message = null;
         String path = FileInfo.constructPath(id, workingDir);
-        if (cachedMessages.containsKey(path))
             message = readFromMemory(path);
-        else
+        if(!message.isPresent())
             message = readFromFile(path);
         return message;
     }

@@ -1,6 +1,8 @@
 package com.epam.repository.file;
 
+import java.util.Optional;
+
 public interface InFileMessageRepositoryReader {
 
-    String readFromFile(String path);
+    Optional<String> readFromFile(String path);
 }

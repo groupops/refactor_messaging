@@ -1,6 +1,8 @@
 package com.epam.repository;
 
+import java.util.Optional;
+
 public interface MessageReader {
 
-    String readMessage(int id);
+    Optional<String> readMessage(int id);
 }

@@ -3,6 +3,7 @@ package com.epam;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Optional;
 
 public class Main {
 
@@ -14,6 +15,7 @@ public class Main {
         String input;
         MessageService messagingService = new MessageService(WORKING_DIR);
         do {
+            System.out.println("-------------------------------------");
             System.out.print(
                     "Please write one of these options: \n" +
                     "[w]rite message\n" +
@@ -31,8 +33,12 @@ public class Main {
                 } else if (input.toLowerCase().startsWith("r")) {   // read
                     System.out.print("Please enter the message id: ");
                     int id = Integer.parseInt(reader.readLine());
-                    String message = messagingService.readMessage(id);
-                    System.out.println(message);
+                    Optional<String> message = messagingService.readMessage(id);
+                    if(message.isPresent())
+                        System.out.println(message.get());
+                    else
+                        System.out.println("There's no such message");
+                    
                 }
             } catch (IOException e) {
                 throw new RuntimeException("If I cannot read from Standard Input then what is life good for :( let's die.", e);

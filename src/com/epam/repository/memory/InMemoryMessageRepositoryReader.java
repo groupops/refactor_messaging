@@ -1,6 +1,8 @@
 package com.epam.repository.memory;
 
+import java.util.Optional;
+
 public interface InMemoryMessageRepositoryReader {
 
-    String readFromMemory(String path);
+    Optional<String> readFromMemory(String path);
 }
