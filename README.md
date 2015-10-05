@@ -1,2 +1,2 @@
 # refactor_messaging
-Refactor this messaging class
+Refactor this messaging class to follow SOLID principles
