@@ -1,10 +1,16 @@
 package com.epam.service.writer;
 
+import com.epam.model.Message;
 import com.epam.model.MessageCache;
 
-public class ToMemoryMessageWriter implements ToMemoryWriter {
+public class ToMemoryMessageWriter implements MessageWriter {
 
-  MessageCache messageCache;
+  private MessageCache messageCache;
+  private String workingDir;
+
+  public ToMemoryMessageWriter(String workingDir) {
+    this.workingDir = workingDir;
+  }
 
   public ToMemoryMessageWriter(MessageCache messageCache) {
     if(messageCache == null){
@@ -14,7 +20,7 @@ public class ToMemoryMessageWriter implements ToMemoryWriter {
   }
 
   @Override
-  public void save(String path, String message) {
-    messageCache.add(path, message);
+  public void save(Message message) {
+    messageCache.add(workingDir, message);
   }
 }

@@ -2,15 +2,20 @@ package com.epam.model;
 
 public class Message {
 
-  String path;
+  int id;
   String content;
 
-  public String getPath() {
-    return path;
+  public Message(int id, String content) {
+    this.id = id;
+    this.content = content;
   }
 
-  public void setPath(String path) {
-    this.path = path;
+  public int getId() {
+    return id;
+  }
+
+  public void setId(int id) {
+    this.id = id;
   }
 
   public String getContent() {

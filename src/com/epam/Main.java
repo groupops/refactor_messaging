@@ -1,9 +1,10 @@
 package com.epam;
 
 import com.epam.model.FileInfo;
+import com.epam.model.Message;
 import com.epam.model.MessageCache;
 import com.epam.model.UserCommand;
-import com.epam.service.MessagingService;
+import com.epam.service.MessagingServiceImpl;
 import com.epam.util.Maybe;
 
 import java.io.BufferedReader;
@@ -13,9 +14,10 @@ import java.io.InputStreamReader;
 public class Main {
 
   private static BufferedReader reader;
-  private static final String WORKING_DIR =
+  private static final String workingDir =
       "/home/magdy/Desktop/messages_folder";
   public static final MessageCache messageCache = new MessageCache();
+  private static int idCounter = 1;
 
   public static void main(String[] args) {
     runApplication();
@@ -24,10 +26,9 @@ public class Main {
   public static void runApplication() {
     reader = new BufferedReader(new InputStreamReader(System.in));
     String input;
-    int id_counter = 1;
     do {
-      MessagingService messaging_service =
-          new MessagingService(WORKING_DIR, messageCache);
+      MessagingServiceImpl messaging_service =
+          new MessagingServiceImpl(workingDir);
       System.out.print(
           "Please save one of these options: \n" +
               "[w]rite message\n" +
@@ -38,7 +39,7 @@ public class Main {
 
       try {
         input = reader.readLine();
-        id_counter = actionForInput(input, id_counter, messaging_service,
+        actionForInput(input, idCounter, messaging_service,
             reader);
       } catch (IOException e) {
         throw new RuntimeException(
@@ -47,19 +48,18 @@ public class Main {
     } while (!input.toLowerCase().equals(UserCommand.QUIT));
   }
 
-  private static int actionForInput(String input, int id_counter,
-                                    MessagingService messaging_service,
-                                    BufferedReader reader)
+  private static void actionForInput(String input, int id_counter,
+                                     MessagingServiceImpl messaging_service,
+                                     BufferedReader reader)
       throws IOException {
     if (input.toLowerCase().equals(UserCommand.WRITE)) {
-      id_counter = makeWriteAction(id_counter, messaging_service, reader);
+      makeWriteAction(id_counter, messaging_service, reader);
     } else if (input.toLowerCase().equals(UserCommand.READ)) {
       makeReadAction(messaging_service, reader);
     }
-    return id_counter;
   }
 
-  private static void makeReadAction(MessagingService messaging_service,
+  private static void makeReadAction(MessagingServiceImpl messaging_service,
                                      BufferedReader reader)
       throws IOException {
     System.out.print("Please enter the message id: ");
@@ -67,19 +67,20 @@ public class Main {
     FileInfo file_info = messaging_service.getMessageFileInfoById(id);
     if (file_info.exists()) {
       String path = file_info.getFilePath();
-      Maybe<String> message = messaging_service.readMessage(path);
+      Maybe<Message> message = messaging_service.readMessage(path, idCounter);
       System.out.println(message);
     }
   }
 
-  private static int makeWriteAction(int id_counter,
-                                     MessagingService messaging_service,
-                                     BufferedReader reader)
+  private static void makeWriteAction(int id_counter,
+                                      MessagingServiceImpl messaging_service,
+                                      BufferedReader reader)
       throws IOException {
     System.out.print("Please enter your message: ");
-    String message = reader.readLine();
-    messaging_service.saveMessage(id_counter, message);
+    String messageContent = reader.readLine();
+    Message message = new Message(idCounter, messageContent);
+    messaging_service.saveMessage(message);
     id_counter++;
-    return id_counter;
   }
+
 }

@@ -1,8 +1,10 @@
 package com.epam.service.reader;
 
+import com.epam.model.Message;
 import com.epam.model.MessageCache;
+import com.epam.util.Maybe;
 
-public class FromMemoryMessageReader implements FromMemoryReader {
+public class FromMemoryMessageReader implements MessageReader {
 
   MessageCache messageCache;
 
@@ -14,7 +16,7 @@ public class FromMemoryMessageReader implements FromMemoryReader {
   }
 
   @Override
-  public String read(String path) {
+  public Maybe<Message> read(String path) {
     return messageCache.getMessageByPath(path);
   }
 }
