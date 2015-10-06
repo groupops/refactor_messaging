@@ -29,13 +29,14 @@ public class MessagingServiceImpl implements MessagingService {
     }
     
 	public Maybe<String> readMessage(String path, int id){
-        String message = null;
+		MessageReader messageReader = null;
+		String message = null;
         // if message is in cache then read it from cache
-        if (cached_messages.containsKey(path)) {
-            message = cached_messages.get(path);
-        } else {
-        	MessageReader messageReader = new FileReader();
-        	message = messageReader.readMessage(path, id);
+        messageReader = new CacheReader();
+        message = messageReader.readMessage(path, id, cached_messages);
+        if (message == null) {
+        	messageReader = new FileReader();
+        	message = messageReader.readMessage(path, id, cached_messages);
         	// write it to cache after you read it from the file
             if (message != null) {
         		MessageWriter writer = new CustomWriter(Arrays.asList(new CacheWriter(working_dir)));

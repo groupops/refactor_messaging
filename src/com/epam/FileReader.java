@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.logging.Level;
 
 import com.sun.istack.internal.logging.Logger;
@@ -14,7 +15,7 @@ public class FileReader implements MessageReader {
 	static Logger logger = Logger.getLogger(FileReader.class);
 	
 	@Override
-	public String readMessage(String path, int id) {
+	public String readMessage(String path, int id, HashMap<String, String> cached_messages) {
     	String message = null;
     	DataInputStream file_reader = null;
         try {
