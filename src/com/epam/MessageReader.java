@@ -5,4 +5,6 @@ package com.epam;
  */
 public interface MessageReader {
     Maybe<Message> readMessage(String filePath);
+
+    void setInternalReader(MessageReader reader);
 }

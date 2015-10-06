@@ -7,6 +7,7 @@ import java.util.Map;
  */
 public class CachedMessageReader implements MessageReader {
     private final Map<String, Message> cachedMessages;
+    private MessageReader internalReader;
 
     public CachedMessageReader(Map<String, Message> cachedMessages) {
         this.cachedMessages = cachedMessages;
@@ -14,10 +15,17 @@ public class CachedMessageReader implements MessageReader {
 
     @Override
     public Maybe<Message> readMessage(String filePath) {
-        Message message = null;
+        Maybe<Message> message = null;
         if (cachedMessages.containsKey(filePath)) {
-            message = cachedMessages.get(filePath);
+            message = new Maybe<>(cachedMessages.get(filePath));
+        } else if (internalReader != null) {
+            message = internalReader.readMessage(filePath);
         }
-        return new Maybe<>(message);
+        return message;
+    }
+
+    @Override
+    public void setInternalReader(MessageReader reader) {
+        internalReader = reader;
     }
 }

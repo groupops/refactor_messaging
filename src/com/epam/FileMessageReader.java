@@ -13,20 +13,23 @@ import static java.util.logging.Level.SEVERE;
 /**
  * Created by Dmytro_Ulanovych on 10/6/2015.
  */
-public class FileMessageReader extends CachedMessageReader {
+public class FileMessageReader implements MessageReader {
     private final static Logger LOG = Logger.getLogger(FileMessageReader.class);
+    private MessageReader internalReader;
 
-    public FileMessageReader(Map<String, Message> cachedMessages) {
-        super(cachedMessages);
-    }
 
     @Override
     public Maybe<Message> readMessage(String filePath) {
-        Maybe<Message> message = super.readMessage(filePath);
-        if (!message.iterator().hasNext()){
-            message = new Maybe<>(readMessageFromFile(filePath));
+        Maybe<Message> message = new Maybe<>(readMessageFromFile(filePath));
+        if (!message.iterator().hasNext() && internalReader != null) {
+            message = internalReader.readMessage(filePath);
         }
         return message;
+    }
+
+    @Override
+    public void setInternalReader(MessageReader reader) {
+        internalReader = reader;
     }
 
     private Message readMessageFromFile(String filePath) {
