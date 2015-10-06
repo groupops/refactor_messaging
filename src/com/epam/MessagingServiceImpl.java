@@ -14,10 +14,7 @@ public class MessagingServiceImpl implements MessagingService {
     private String file_path;
 
     public MessagingServiceImpl(String working_dir){
-    	if (working_dir == null) {
-			throw new IllegalArgumentException("Your working dir is null.");
-		}
-        this.working_dir = working_dir;
+    	this.working_dir = working_dir;
     }
 
     public String getFilePath() {
