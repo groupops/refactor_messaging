@@ -29,11 +29,11 @@ public class Main {
                 if (input.toLowerCase().startsWith("w")) {  // write
                     System.out.print("Please enter your message: ");
                     String message = reader.readLine();
-                    messagingService.saveMessage(message);
+                    messagingService.save(message);
                 } else if (input.toLowerCase().startsWith("r")) {   // read
                     System.out.print("Please enter the message id: ");
                     int id = Integer.parseInt(reader.readLine());
-                    Optional<String> message = messagingService.readMessage(id);
+                    Optional<String> message = messagingService.read(id);
                     if(message.isPresent())
                         System.out.println(message.get());
                     else
