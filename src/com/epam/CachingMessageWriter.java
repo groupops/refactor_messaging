@@ -10,6 +10,12 @@ public class CachingMessageWriter implements MessageWriter {
     private final MessageWriter internalWriter;
 
     public CachingMessageWriter(Map<Integer, Message> cache, MessageWriter internalWriter) {
+        if (cache == null) {
+            throw new IllegalArgumentException("Cache can't be null!");
+        }
+        if (internalWriter == null) {
+            throw new IllegalArgumentException("Writer can't be null!");
+        }
         this.cache = cache;
         this.internalWriter = internalWriter;
     }
