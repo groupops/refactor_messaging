@@ -21,7 +21,7 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         consoleReader = new BufferedReader(new InputStreamReader(System.in));
-        MessageReader reader = new CachedMessageReader(new HashMap<>());
+        MessageReader reader = new FileMessageReader(CACHING_MESSAGES);
         MessageWriter writer = new CachedMessageWriter(CACHING_MESSAGES, WORKING_DIR);
         do {
             switch (getConsoleCommand()) {
