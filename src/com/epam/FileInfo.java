@@ -7,13 +7,11 @@ import java.io.File;
  */
 public class FileInfo {
 
-    private String working_directory;
     private int id;
     private String path;
     private File file;
 
     public FileInfo(String working_directory, int message_id){
-        this.working_directory = working_directory;
         this.id = message_id;
         if (working_directory.endsWith(File.separator))
             working_directory = working_directory.substring(0, working_directory.length()-2);

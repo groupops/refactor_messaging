@@ -1,6 +1,5 @@
 package com.epam;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -15,7 +14,7 @@ public class Main {
         String input;
         int id_counter = 1;
         do {
-            MessagingService messaging_service = new MessagingService(WORKING_DIR);
+            MessagingService messaging_service = new MessagingServiceImpl(WORKING_DIR);
             System.out.print(
                     "Please write one of these options: \n" +
                     "[w]rite message\n" +
@@ -34,10 +33,10 @@ public class Main {
                 } else if (input.toLowerCase().startsWith("r")) {   // read
                     System.out.print("Please enter the message id: ");
                     int id = Integer.parseInt(reader.readLine());
-                    FileInfo file_info = messaging_service.getMessageFileInfoById(id);
-                    if (file_info.exists()) {
-                        String path = file_info.getFilePath();
-                        String message = messaging_service.readMessage(path);
+                    FileInfo fileInfo = new FileInfo(WORKING_DIR, id);
+                    if (fileInfo.exists()) {
+                        String path = fileInfo.getFilePath();
+                        Maybe<String> message = messaging_service.readMessage(path, id);
                         System.out.println(message);
                     }
                 }
