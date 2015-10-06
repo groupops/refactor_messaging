@@ -6,9 +6,9 @@ import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.epam.FileInfo;
 import com.epam.messages.Message;
 import com.epam.messages.MessageWriter;
+import com.epam.util.FileUtil;
 
 public class FileWriter implements MessageWriter {
 
@@ -22,7 +22,7 @@ public class FileWriter implements MessageWriter {
     
     @Override
     public void saveMessage(Message message) {
-        String filePath = FileInfo.constructPath(message.getId(), workingDirectory);
+        String filePath = FileUtil.constructPath(message.getId(), workingDirectory);
         System.out.println("Saved under: " + filePath);
 
         try {

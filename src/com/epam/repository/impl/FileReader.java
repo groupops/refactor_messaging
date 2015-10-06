@@ -8,8 +8,8 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.epam.FileInfo;
 import com.epam.messages.MessageReader;
+import com.epam.util.FileUtil;
 
 public class FileReader implements MessageReader{
 
@@ -24,7 +24,7 @@ public class FileReader implements MessageReader{
     @Override
     public Optional<String> readMessage(int id) {
         Optional<String> message = Optional.empty();
-        Path path = Paths.get(FileInfo.constructPath(id, workingDirectory));
+        Path path = Paths.get(FileUtil.constructPath(id, workingDirectory));
         try {
             message = Optional.ofNullable(new String(Files.readAllBytes(path)));
         } catch (IOException e) {
