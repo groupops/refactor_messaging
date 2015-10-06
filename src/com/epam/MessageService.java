@@ -4,40 +4,34 @@ import java.util.HashMap;
 import java.util.Optional;
 
 import com.epam.messages.Message;
-import com.epam.messages.MessageReader;
-import com.epam.messages.MessageWriter;
 import com.epam.repository.Repository;
-import com.epam.repository.impl.FileReader;
-import com.epam.repository.impl.FileWriter;
-import com.epam.repository.impl.MemoryReader;
-import com.epam.repository.impl.MemoryWriter;
+import com.epam.repository.impl.CompositeWriter;
+import com.epam.repository.impl.FileHandler;
+import com.epam.repository.impl.MemoryHandler;
 
 public class MessageService implements Repository{
 
     private HashMap<Integer, String> repository = new HashMap<Integer, String>();
     private int idCounter = 1;
 
-    private MessageWriter fileWriter, memoryWriter;
-    private MessageReader fileReader, memoryReader;
+    private FileHandler fileHandler;
+    private MemoryHandler memoryHandler;
+    private CompositeWriter compositeWriter;
 
     public MessageService(String workingDirectory) {
-        this.fileWriter = new FileWriter(workingDirectory);
-        this.fileReader = new FileReader(workingDirectory);
-        this.memoryWriter = new MemoryWriter(repository);
-        this.memoryReader = new MemoryReader(repository);
+        this.fileHandler = new FileHandler(workingDirectory);
+        this.memoryHandler = new MemoryHandler(repository, fileHandler);
+        this.compositeWriter = new CompositeWriter();
+        this.compositeWriter.addWriter(fileHandler, memoryHandler);
     }
 
     public Optional<String> read(int id) {
-        Optional<String> messageContent = memoryReader.readMessage(id);
-        if (!messageContent.isPresent())
-            messageContent = fileReader.readMessage(id);
-        return messageContent;
+        return memoryHandler.readMessage(id);
     }
 
     public void save(String content) {
         Message message = new Message(idCounter, content);
-        fileWriter.saveMessage(message);
-        memoryWriter.saveMessage(message);
+        compositeWriter.saveMessage(message);
         idCounter++;
     }
 }
