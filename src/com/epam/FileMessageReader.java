@@ -6,7 +6,6 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Map;
 
 import static java.util.logging.Level.SEVERE;
 
@@ -15,28 +14,22 @@ import static java.util.logging.Level.SEVERE;
  */
 public class FileMessageReader implements MessageReader {
     private final static Logger LOG = Logger.getLogger(FileMessageReader.class);
-    private MessageReader internalReader;
+    private final String workingDirectory;
 
-
-    @Override
-    public Maybe<Message> readMessage(String filePath) {
-        Maybe<Message> message = new Maybe<>(readMessageFromFile(filePath));
-        if (!message.iterator().hasNext() && internalReader != null) {
-            message = internalReader.readMessage(filePath);
-        }
-        return message;
+    public FileMessageReader(String workingDirectory) {
+        this.workingDirectory = workingDirectory;
     }
 
     @Override
-    public void setInternalReader(MessageReader reader) {
-        internalReader = reader;
+    public Maybe<Message> readMessage(Integer id) {
+        return new Maybe<>(readMessageFromFile(id));
     }
 
-    private Message readMessageFromFile(String filePath) {
+    private Message readMessageFromFile(Integer id) {
         Message message = null;
+        String filePath = new FileInfo(workingDirectory, id).getFilePath();
         try (DataInputStream reader = new DataInputStream(new FileInputStream(new File(filePath)))) {
-            FileInfo info = new FileInfo(filePath);
-            message = new Message(info.getId(), reader.readUTF());
+            message = new Message(id, reader.readUTF());
         } catch (IOException e) {
             LOG.log(SEVERE, String.format("Error while reading message file %s", filePath), e);
         }

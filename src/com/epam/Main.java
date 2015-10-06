@@ -15,15 +15,14 @@ public class Main {
     }
 
     private static final String WORKING_DIR = "D:";
-    private static final Map<String, Message> CACHING_MESSAGES = new HashMap<>();
+    private static final Map<Integer, Message> CACHING_MESSAGES = new HashMap<>();
     private static BufferedReader consoleReader;
     private static int MESSAGES_COUNTER = 0;
 
     public static void main(String[] args) throws IOException {
         consoleReader = new BufferedReader(new InputStreamReader(System.in));
-        MessageReader reader = new CachedMessageReader(CACHING_MESSAGES);
-        reader.setInternalReader(new FileMessageReader());
-        MessageWriter writer = new CachedMessageWriter(CACHING_MESSAGES, WORKING_DIR);
+        MessageReader reader = new CachingMessageReader(new FileMessageReader(WORKING_DIR), CACHING_MESSAGES);
+        MessageWriter writer = new CachingMessageWriter(CACHING_MESSAGES, new FileMessageWriter(WORKING_DIR));
         do {
             switch (getConsoleCommand()) {
                 case READ:
@@ -54,8 +53,7 @@ public class Main {
         int id = Integer.parseInt(consoleReader.readLine());
         FileInfo fileInfo = new FileInfo(WORKING_DIR, id);
         if (fileInfo.exists()) {
-            String path = fileInfo.getFilePath();
-            for (Message message : reader.readMessage(path)) {
+            for (Message message : reader.readMessage(id)) {
                 System.out.println(message.getBody());
             }
         }

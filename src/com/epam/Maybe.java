@@ -1,34 +1,35 @@
 package com.epam;
 
-import java.util.Iterator;
+import java.util.*;
+import java.util.function.Consumer;
 
 /**
  * Created by Dmytro_Ulanovych on 10/5/2015.
  */
 public class Maybe<T> implements Iterable<T> {
-    private T value;
+    private List<T> value;
 
     public Maybe(T value) {
-        this.value = value;
-    }
-
-    public Maybe() {
+        if (value == null) {
+            this.value = Collections.EMPTY_LIST;
+        } else {
+            this.value = new ArrayList<>();
+            this.value.add(value);
+        }
     }
 
     @Override
     public Iterator<T> iterator() {
-        return new Iterator<T>() {
-            @Override
-            public boolean hasNext() {
-                return value != null;
-            }
+        return value.iterator();
+    }
 
-            @Override
-            public T next() {
-                T returnValue = value;
-                value = null;
-                return returnValue;
-            }
-        };
+    @Override
+    public void forEach(Consumer<? super T> action) {
+        value.forEach(action);
+    }
+
+    @Override
+    public Spliterator<T> spliterator() {
+        return value.spliterator();
     }
 }
