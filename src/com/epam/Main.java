@@ -1,8 +1,6 @@
 package com.epam;
 
-import com.epam.model.FileInfo;
 import com.epam.model.Message;
-import com.epam.model.MessageCache;
 import com.epam.model.UserCommand;
 import com.epam.service.MessagingServiceImpl;
 import com.epam.util.Maybe;
@@ -16,7 +14,6 @@ public class Main {
   private static BufferedReader reader;
   private static final String workingDir =
       "/home/magdy/Desktop/messages_folder";
-  public static final MessageCache messageCache = new MessageCache();
   private static int idCounter = 1;
 
   public static void main(String[] args) {
@@ -39,7 +36,7 @@ public class Main {
 
       try {
         input = reader.readLine();
-        actionForInput(input, idCounter, messaging_service,
+        actionForInput(input, messaging_service,
             reader);
       } catch (IOException e) {
         throw new RuntimeException(
@@ -48,12 +45,11 @@ public class Main {
     } while (!input.toLowerCase().equals(UserCommand.QUIT));
   }
 
-  private static void actionForInput(String input, int id_counter,
-                                     MessagingServiceImpl messaging_service,
+  private static void actionForInput(String input, MessagingServiceImpl messaging_service,
                                      BufferedReader reader)
       throws IOException {
     if (input.toLowerCase().equals(UserCommand.WRITE)) {
-      makeWriteAction(id_counter, messaging_service, reader);
+      makeWriteAction(messaging_service, reader);
     } else if (input.toLowerCase().equals(UserCommand.READ)) {
       makeReadAction(messaging_service, reader);
     }
@@ -64,23 +60,18 @@ public class Main {
       throws IOException {
     System.out.print("Please enter the message id: ");
     int id = Integer.parseInt(reader.readLine());
-    FileInfo file_info = messaging_service.getMessageFileInfoById(id);
-    if (file_info.exists()) {
-      String path = file_info.getFilePath();
-      Maybe<Message> message = messaging_service.readMessage(path, idCounter);
-      System.out.println(message);
+    Maybe<Message> messages = messaging_service.readMessage(id);
+    for (Message message : messages) {
+      System.out.println(message.getContent());
     }
   }
 
-  private static void makeWriteAction(int id_counter,
-                                      MessagingServiceImpl messaging_service,
+  private static void makeWriteAction(MessagingServiceImpl messaging_service,
                                       BufferedReader reader)
       throws IOException {
     System.out.print("Please enter your message: ");
-    String messageContent = reader.readLine();
-    Message message = new Message(idCounter, messageContent);
+    String message = reader.readLine();
     messaging_service.saveMessage(message);
-    id_counter++;
   }
 
 }

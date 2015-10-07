@@ -6,13 +6,13 @@ import com.sun.istack.internal.logging.Logger;
 
 import java.io.*;
 
-public class ToFileMessageWriter implements MessageWriter {
+public class ToFileCacheWriter implements CacheWriter {
 
   private Logger logger = Logger.getLogger(this.getClass());
 
   private String workingDirectory;
 
-  public ToFileMessageWriter(String workingDirectory) {
+  public ToFileCacheWriter(String workingDirectory) {
     this.workingDirectory = workingDirectory;
   }
 

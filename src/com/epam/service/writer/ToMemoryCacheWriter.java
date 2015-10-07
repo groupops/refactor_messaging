@@ -3,16 +3,16 @@ package com.epam.service.writer;
 import com.epam.model.Message;
 import com.epam.model.MessageCache;
 
-public class ToMemoryMessageWriter implements MessageWriter {
+public class ToMemoryCacheWriter implements CacheWriter {
 
   private MessageCache messageCache;
   private String workingDir;
 
-  public ToMemoryMessageWriter(String workingDir) {
+  public ToMemoryCacheWriter(String workingDir) {
     this.workingDir = workingDir;
   }
 
-  public ToMemoryMessageWriter(MessageCache messageCache) {
+  public ToMemoryCacheWriter(MessageCache messageCache) {
     if(messageCache == null){
       messageCache = new MessageCache();
     }

@@ -5,8 +5,8 @@ import com.epam.util.Maybe;
 
 public interface MessagingService {
 
-  void saveMessage(Message message);
+  void saveMessage(String message);
 
-  Maybe<Message> readMessage(String path, int id);
+  Maybe<Message> readMessage(int id);
 
 }

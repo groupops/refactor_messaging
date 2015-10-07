@@ -7,18 +7,22 @@ import java.util.Map;
 
 public class MessageCache {
 
-  private Map<String, Message> cached_messages = new HashMap<>();
+  private Map<String, Message> cachedMessages = new HashMap<>();
 
   public boolean isMessageInPath(String path) {
-    return cached_messages.containsKey(path);
+    return cachedMessages.containsKey(path);
   }
 
   public void add(String path, Message message) {
-      cached_messages.put(path, message);
+      cachedMessages.put(path, message);
   }
 
-  public Maybe<Message> getMessageByPath(String path) {
-    return new Maybe<>(cached_messages.get(path));
+  public Maybe<Message> readFromCache(String path){
+    return new Maybe<>(cachedMessages.get(path));
+  }
+
+  public Maybe<Message> getMessageById(int id) {
+    return new Maybe<>(cachedMessages.get(id));
   }
 
 }
